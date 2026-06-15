@@ -4,7 +4,7 @@ import TextInput from 'ink-text-input';
 import Spinner from 'ink-spinner';
 import type { AgentMonitor, AgentStatus } from '../core/state';
 import type { LearningEngine } from '../learning/engine';
-import type { LessonUpdate } from '../learning/types';
+import type { LessonUpdate, LessonKind } from '../learning/types';
 import { listTopics } from '../learning/store';
 
 interface AppProps {
@@ -22,6 +22,7 @@ export function App({ monitor, engine }: AppProps) {
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showTopics, setShowTopics] = useState(false);
+  const [kind, setKind] = useState<LessonKind>('lesson');
 
   useEffect(() => {
     const onStatus = (s: AgentStatus) => setStatus(s);
@@ -29,6 +30,7 @@ export function App({ monitor, engine }: AppProps) {
       setTopic(u.topic);
       setLesson(u.text);
       setLessonNo(u.lessonNo);
+      setKind(u.kind);
       setGenerating(!u.done);
       if (u.done) setError(null);
     };
@@ -78,6 +80,15 @@ export function App({ monitor, engine }: AppProps) {
       void engine.deliver('deeper');
       return;
     }
+    if (v === '/quiz' || v === '/q') {
+      void engine.deliver('quiz');
+      return;
+    }
+    if (v.startsWith('/why ')) {
+      const why = v.slice('/why '.length).trim();
+      if (why) engine.setMission(why);
+      return;
+    }
     if (v.startsWith('/topic ')) {
       const t = v.slice('/topic '.length).trim();
       if (t) {
@@ -95,6 +106,14 @@ export function App({ monitor, engine }: AppProps) {
   }
 
   const topics = showTopics ? listTopics() : [];
+  const turnLabel =
+    kind === 'quiz'
+      ? 'recall quiz'
+      : kind === 'answer'
+        ? 'q&a'
+        : kind === 'deeper'
+          ? `lesson ${lessonNo} · deeper`
+          : `lesson ${lessonNo}`;
 
   return (
     <Box flexDirection="column" padding={1}>
@@ -115,7 +134,7 @@ export function App({ monitor, engine }: AppProps) {
       <Box marginTop={1}>
         {topic ? (
           <Text color="magenta">
-            📚 {topic} <Text dimColor>· lesson {lessonNo}</Text>
+            📚 {topic} <Text dimColor>· {turnLabel}</Text>
           </Text>
         ) : (
           <Text dimColor>Type a topic to start (e.g. "the fall of the Roman Empire").</Text>
@@ -152,11 +171,11 @@ export function App({ monitor, engine }: AppProps) {
           value={input}
           onChange={setInput}
           onSubmit={submit}
-          placeholder="topic, a question, or /next /deeper /topics /quit"
+          placeholder="topic, an answer, a question, or /next /quiz /deeper /why …"
         />
       </Box>
       <Box>
-        <Text dimColor>/next · /deeper · /topic &lt;name&gt; · /topics · /quit · Ctrl+C</Text>
+        <Text dimColor>/next · /quiz · /deeper · /why &lt;reason&gt; · /topic &lt;name&gt; · /topics · /quit</Text>
       </Box>
     </Box>
   );

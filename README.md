@@ -128,7 +128,9 @@ claude             # your agent, as usual
 | ------------------- | --------------------------------------------------- |
 | `the history of jazz` | start a new topic                                 |
 | `/next` · `/n`      | next bite-sized lesson                              |
+| `/quiz` · `/q`      | spaced recall quiz on an earlier lesson             |
 | `/deeper` · `/d`    | go one layer deeper on the current idea             |
+| `/why <reason>`     | tell the tutor why you're learning this (grounds lessons) |
 | `/topic <name>`     | switch to / start another topic                     |
 | `/topics`           | list saved topics (all resumable)                   |
 | *any question*      | ask the tutor — answered in the topic's own context |
@@ -158,19 +160,21 @@ WT-specific. Everywhere else, sidequest opens its own window beside your agent.
 ## The learning design
 
 The bet: you lose 30–90 seconds dozens of times a day waiting on an agent — enough for one
-idea. So sidequest is built for **micro-learning in the gaps**:
+idea. So sidequest is built for **micro-learning in the gaps**, using techniques from the
+science of durable learning (the pedagogy is adapted from
+[Matt Pocock's _teach_ skill](https://github.com/mattpocock/skills/tree/main/skills/productivity/teach)):
 
-- **One idea per lesson** — respects working-memory limits; no info-dumps.
-- **Builds on context** — the model keeps the whole thread, so lessons scaffold instead of
-  repeat.
-- **Resume, don't restart** — per-topic memory means learning is spaced across many short
-  sittings (which beats cramming).
-- **A hook every time** — each lesson ends with a question that pulls you into the next.
-- **You can steer** — `/deeper` and free questions turn passive reading into active recall.
-
-> Honest scope: today it's a frictionless, continuous **explainer**. Making knowledge
-> *stick* would benefit from active recall/quizzing and spaced repetition — both on the
-> roadmap.
+- **Mission grounding** — tell it _why_ you're learning a topic (`/why`) and lessons tie
+  back to that reason.
+- **One idea per lesson** — a single concrete takeaway; low working-memory load, no dumps.
+- **Zone of proximal development** — pitched just above what you already know; builds on
+  earlier lessons, never repeats.
+- **Retrieval practice + spacing** — every few lessons it interleaves a `/quiz` on an
+  _earlier_ concept. Effortful recall (not re-reading) is what builds long-term retention,
+  so the goal is storage strength, not the fluency illusion.
+- **Tight feedback loops** — answer a quiz or ask anything and you get immediate, honest
+  correction.
+- **Resume, don't restart** — per-topic memory spaces practice across many short sittings.
 
 ---
 
@@ -180,9 +184,10 @@ idea. So sidequest is built for **micro-learning in the gaps**:
 - [x] Pluggable provider (GLM / Anthropic / OpenAI)
 - [x] Topic-based bite-sized lessons with persistent context
 - [x] Ink TUI + `pair` (side-by-side) launcher
+- [x] Retrieval-practice quizzes, mission grounding & tight feedback (the learning method above)
 - [ ] Codex CLI adapter (`notify` in `~/.codex/config.toml`)
 - [ ] Universal PTY wrapper (`sidequest run -- <agent>`) for any CLI
-- [ ] Active-recall / quiz mode + spaced repetition
+- [ ] Full spaced-repetition scheduling (review intervals across sessions)
 
 ---
 
