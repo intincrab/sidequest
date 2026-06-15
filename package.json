@@ -1,0 +1,38 @@
+{
+  "name": "sidequest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Learn something in a terminal sidebar while your coding agent (Claude Code / Codex) is busy.",
+  "bin": {
+    "sidequest": "./bin/sidequest.mjs"
+  },
+  "scripts": {
+    "start": "tsx src/cli.ts",
+    "dev": "tsx watch src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "install:claude": "tsx src/cli.ts install claude",
+    "pair": "tsx src/cli.ts pair",
+    "doctor": "tsx src/cli.ts doctor",
+    "test": "tsx scripts/smoke.ts && tsx scripts/hook-e2e.ts && tsx scripts/tui-test.ts",
+    "test:live": "node --env-file=.env --import tsx scripts/integration.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "ink": "^5.1.0",
+    "ink-spinner": "^5.0.0",
+    "ink-text-input": "^6.0.0",
+    "openai": "^4.77.0",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
+    "ink-testing-library": "^4.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
